@@ -86364,7 +86364,7 @@ A.qN.prototype={
 kP(a){return this.abe(a)},
 abe(a){var s=0,r=A.P(t.H),q
 var $async$kP=A.Q(function(b,c){if(b===1)return A.M(c,r)
-for(;;)switch(s){case 0:q=A.ff("http://127.0.0.1:8000/admin/"+a,0,null)
+for(;;)switch(s){case 0:q=A.ff("https://ucp.moha85awad.site/admin/"+a,0,null)
 s=2
 return A.R(A.avy(q,B.GY),$async$kP)
 case 2:if(!c)A.Yg().$1("Could not launch "+q.k(0))

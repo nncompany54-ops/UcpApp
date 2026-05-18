@@ -6,7 +6,7 @@ class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
   Future<void> _launchAdminUrl(String path) async {
-    final Uri url = Uri.parse('http://127.0.0.1:8000/admin/$path');
+    final Uri url = Uri.parse('https://ucp.moha85awad.site/admin/$path');
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       debugPrint('Could not launch $url');
     }

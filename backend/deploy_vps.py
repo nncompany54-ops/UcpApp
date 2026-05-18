@@ -146,7 +146,7 @@ def main():
         nginx_conf = (
             "server {\n"
             "    listen 80;\n"
-            "    server_name moha85awad.site www.moha85awad.site;\n\n"
+            "    server_name ucp.moha85awad.site;\n\n"
             "    location / {\n"
             "        root /var/www/ucp_app/frontend/build/web;\n"
             "        index index.html;\n"
@@ -183,7 +183,7 @@ def main():
         # Run certbot to automatically fetch certificate and configure SSL redirections
         run_ssh_command(
             ssh, 
-            "certbot --nginx -d moha85awad.site -d www.moha85awad.site --non-interactive --agree-tos -m moha85awad@gmail.com"
+            "certbot --nginx -d ucp.moha85awad.site --non-interactive --agree-tos -m moha85awad@gmail.com"
         )
         
         # Restart Nginx once more to ensure SSL works beautifully
@@ -191,8 +191,8 @@ def main():
         
         print("\n=======================================================")
         print("🎉 SUCCESS! Deployment to Hostinger VPS is fully complete!")
-        print("Your application is now globally live at: https://moha85awad.site")
-        print("Django Admin panel is live at: https://moha85awad.site/admin")
+        print("Your application is now globally live at: https://ucp.moha85awad.site")
+        print("Django Admin panel is live at: https://ucp.moha85awad.site/admin")
         print("=======================================================")
         
     except Exception as e:

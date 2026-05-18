@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://moha85awad.site/api';
+  static const String baseUrl = 'https://ucp.moha85awad.site/api';
 
   Future<List<Product>> fetchProducts({String? search, Map<String, dynamic>? filters}) async {
     try {

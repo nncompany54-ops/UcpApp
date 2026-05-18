@@ -2,9 +2,21 @@ from rest_framework import serializers
 from .models import Company, Category, Product
 
 class CompanySerializer(serializers.ModelSerializer):
+    logo = serializers.SerializerMethodField()
+
     class Meta:
         model = Company
         fields = ['id', 'name', 'logo']
+
+    def get_logo(self, obj):
+        if not obj.logo:
+            return None
+        url = obj.logo.url
+        if url.startswith('/'):
+            return f"https://ucp.moha85awad.site{url}"
+        elif not url.startswith('http'):
+            return f"https://ucp.moha85awad.site/{url}"
+        return url
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,8 +38,14 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
 
     def get_images(self, obj):
-        request = self.context.get('request')
-        return [
-            request.build_absolute_uri(img.image.url) if request else img.image.url 
-            for img in obj.product_images.all()
-        ]
+        urls = []
+        for img in obj.product_images.all():
+            if not img.image:
+                continue
+            url = img.image.url
+            if url.startswith('/'):
+                url = f"https://ucp.moha85awad.site{url}"
+            elif not url.startswith('http'):
+                url = f"https://ucp.moha85awad.site/{url}"
+            urls.append(url)
+        return urls

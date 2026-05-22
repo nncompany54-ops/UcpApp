@@ -44,8 +44,7 @@ product, created = Product.objects.get_or_create(
     defaults={
         'description': 'وصف المنتج التجريبي',
         'company': company,
-        'category': category,
-        'price': 100.00
+        'category': category
     }
 )
 if created:

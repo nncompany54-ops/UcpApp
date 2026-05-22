@@ -33,7 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'description', 'ingredients', 'usage', 'warnings',
             'company', 'category', 'skin_type', 'target_audience',
-            'product_type', 'price', 'images', 'is_featured', 'is_new_arrival',
+            'product_type', 'images', 'is_featured', 'is_new_arrival',
             'created_at', 'updated_at'
         ]
 

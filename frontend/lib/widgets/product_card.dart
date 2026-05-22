@@ -71,15 +71,15 @@ class ProductCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '\$${product.price.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          color: Color(0xFFFF8C00), // Darker orange to match theme
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF8C00).withOpacity(0.1),
+                          shape: BoxShape.circle,
                         ),
+                        child: const Icon(Icons.add_shopping_cart, color: Color(0xFFFF8C00), size: 18),
                       ),
-                      const Icon(Icons.add_shopping_cart, color: Color(0xFFFF8C00), size: 18),
                     ],
                   ),
                 ],

@@ -24,7 +24,6 @@ class Product(models.Model):
     skin_type = models.CharField(max_length=100, blank=True, null=True)
     target_audience = models.CharField(max_length=200, blank=True, null=True)
     product_type = models.CharField(max_length=100, blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_featured = models.BooleanField(default=False)
     is_new_arrival = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

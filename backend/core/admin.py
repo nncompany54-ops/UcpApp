@@ -24,15 +24,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('show_image', 'name', 'company', 'category', 'price', 'is_featured', 'is_new_arrival')
+    list_display = ('show_image', 'name', 'company', 'category', 'is_featured', 'is_new_arrival')
     list_filter = ('company', 'category', 'is_featured', 'is_new_arrival', 'skin_type')
     search_fields = ('name', 'description', 'ingredients')
-    list_editable = ('price', 'is_featured', 'is_new_arrival')
+    list_editable = ('is_featured', 'is_new_arrival')
     inlines = [ProductImageInline]
     
     fieldsets = (
         ('المعلومات الأساسية', {
-            'fields': ('name', 'description', 'company', 'category', 'price')
+            'fields': ('name', 'description', 'company', 'category')
         }),
         ('التفاصيل الفنية', {
             'fields': ('ingredients', 'usage', 'warnings')

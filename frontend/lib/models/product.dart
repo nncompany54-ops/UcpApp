@@ -2,7 +2,6 @@ class Product {
   final int id;
   final String name;
   final String description;
-  final double price;
   final String imageUrl;
   final List<String> allImages;
   final String companyName;
@@ -17,7 +16,6 @@ class Product {
     required this.id,
     required this.name,
     required this.description,
-    required this.price,
     required this.imageUrl,
     required this.allImages,
     required this.companyName,
@@ -39,7 +37,6 @@ class Product {
       id: json['id'],
       name: json['name'],
       description: json['description'] ?? '',
-      price: double.parse(json['price'].toString()),
       imageUrl: imagesList.isNotEmpty ? imagesList[0] : '',
       allImages: imagesList,
       companyName: json['company'] != null ? json['company']['name'] : '',

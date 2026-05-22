@@ -68,31 +68,14 @@ class ProductDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    product.companyName,
-                    style: const TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-            Text(
-              '\$${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-          ],
+        Text(
+          product.name,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          product.companyName,
+          style: const TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 15),
         if (product.skinType != null && product.skinType!.isNotEmpty)

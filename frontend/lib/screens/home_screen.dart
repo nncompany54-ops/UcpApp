@@ -54,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData({String? search}) async {
     setState(() => _isLoading = true);
     try {
-      final fetchedCategories = await _apiService.fetchCategories();
+      final fetchedCategories = await _apiService.fetchCategories(
+        companyId: _activeFilters['company'],
+      );
       final fetchedCompanies = await _apiService.fetchCompanies();
       final fetchedProducts = await _apiService.fetchProducts(
         search: search ?? _searchController.text,
@@ -306,6 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   setState(() {
                     _selectedCompanyIndex = index;
+                    _selectedCategoryIndex = 0;
+                    _activeFilters.remove('category');
                     if (isGeneral) {
                       _activeFilters.remove('company');
                     } else {

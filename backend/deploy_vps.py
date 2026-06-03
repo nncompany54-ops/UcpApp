@@ -23,16 +23,37 @@ LOCAL_PROJECT_ROOT = r"d:\course antigravity\UCPApp"
 LOCAL_WEB_BUILD_DIR = os.path.join(LOCAL_PROJECT_ROOT, "frontend", "build", "web")
 
 def run_ssh_command(ssh_client, command):
-    print(f"\n[Executing] {command}")
+    try:
+        print(f"\n[Executing] {command}")
+    except UnicodeEncodeError:
+        print(f"\n[Executing] {command.encode('ascii', errors='replace').decode('ascii')}")
+        
     stdin, stdout, stderr = ssh_client.exec_command(command)
     
     # Read output in real time
     for line in stdout:
-        print(f"  [STDOUT] {line.strip()}")
+        try:
+            print(f"  [STDOUT] {line.strip()}")
+        except UnicodeEncodeError:
+            try:
+                clean_line = line.encode(sys.stdout.encoding or 'utf-8', errors='replace').decode(sys.stdout.encoding or 'utf-8')
+                print(f"  [STDOUT] {clean_line.strip()}")
+            except Exception:
+                print(f"  [STDOUT] {line.encode('ascii', errors='replace').decode('ascii').strip()}")
     
-    err_output = stderr.read().decode('utf-8')
-    if err_output:
-        print(f"  [STDERR] {err_output.strip()}")
+    try:
+        err_output = stderr.read().decode('utf-8', errors='ignore')
+        if err_output:
+            try:
+                print(f"  [STDERR] {err_output.strip()}")
+            except UnicodeEncodeError:
+                try:
+                    clean_err = err_output.encode(sys.stdout.encoding or 'utf-8', errors='replace').decode(sys.stdout.encoding or 'utf-8')
+                    print(f"  [STDERR] {clean_err.strip()}")
+                except Exception:
+                    print(f"  [STDERR] {err_output.encode('ascii', errors='replace').decode('ascii').strip()}")
+    except Exception as e:
+        print(f"  [Error reading STDERR] {e}")
     
     return stdout.channel.recv_exit_status()
 

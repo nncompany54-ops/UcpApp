@@ -51,4 +51,19 @@ class ApiService {
       throw Exception('خطأ في الاتصال: $e');
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchCompanies() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/companies/'));
+      
+      if (response.statusCode == 200) {
+        List<dynamic> body = jsonDecode(utf8.decode(response.bodyBytes));
+        return List<Map<String, dynamic>>.from(body);
+      } else {
+        throw Exception('فشل في تحميل الشركات');
+      }
+    } catch (e) {
+      throw Exception('خطأ في الاتصال: $e');
+    }
+  }
 }

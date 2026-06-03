@@ -5,7 +5,6 @@ import '../models/product.dart';
 import '../widgets/product_card.dart';
 import '../services/api_service.dart';
 import '../widgets/premium_background.dart';
-import 'admin_dashboard_screen.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,12 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   
   int _currentBannerIndex = 0;
   int _selectedCategoryIndex = 0;
+  int _selectedCompanyIndex = 0;
   
   // فلاتر البحث
   Map<String, dynamic> _activeFilters = {};
 
   List<Map<String, dynamic>> _rawCategories = [];
   List<String> categories = ['الكل'];
+  List<Map<String, dynamic>> _companies = [];
   List<Product> products = [];
   bool _isLoading = true;
 
@@ -54,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = true);
     try {
       final fetchedCategories = await _apiService.fetchCategories();
+      final fetchedCompanies = await _apiService.fetchCompanies();
       final fetchedProducts = await _apiService.fetchProducts(
         search: search ?? _searchController.text,
         filters: _activeFilters,
@@ -61,6 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _rawCategories = fetchedCategories;
         categories = ['الكل', ...fetchedCategories.map((c) => c['name'] as String)];
+        _companies = [
+          {'id': null, 'name': 'عام', 'logo': null},
+          ...fetchedCompanies,
+        ];
         products = fetchedProducts;
         _isLoading = false;
       });
@@ -102,8 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       selected: isSelected,
                       onSelected: (val) {
                         setState(() {
-                          if (val) _activeFilters['skin_type'] = type;
-                          else _activeFilters.remove('skin_type');
+                          if (val) {
+                            _activeFilters['skin_type'] = type;
+                          } else {
+                            _activeFilters.remove('skin_type');
+                          }
                         });
                         Navigator.pop(context);
                         _loadData();
@@ -114,7 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    setState(() => _activeFilters = {});
+                    setState(() {
+                      _activeFilters = {};
+                      _selectedCategoryIndex = 0;
+                      _selectedCompanyIndex = 0;
+                    });
                     Navigator.pop(context);
                     _loadData();
                   },
@@ -145,6 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildSearchSection(),
                 const SizedBox(height: 25),
                 _buildCarouselSlider(),
+                const SizedBox(height: 25),
+                _buildCompanies(),
                 const SizedBox(height: 25),
                 _buildSectionHeader('الأقسام'),
                 const SizedBox(height: 15),
@@ -260,6 +275,141 @@ class _HomeScreenState extends State<HomeScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 4.0),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: _currentBannerIndex == entry.key ? Colors.blue : Colors.grey.shade300),
           )).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCompanies() {
+    if (_companies.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('الشركات'),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            itemCount: _companies.length,
+            itemBuilder: (context, index) {
+              final company = _companies[index];
+              final isSelected = _selectedCompanyIndex == index;
+              final isGeneral = index == 0;
+              
+              final name = company['name'] ?? '';
+              final Color fallbackColor = Colors.primaries[name.hashCode % Colors.primaries.length].withOpacity(0.8);
+
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedCompanyIndex = index;
+                    if (isGeneral) {
+                      _activeFilters.remove('company');
+                    } else {
+                      _activeFilters['company'] = company['id'];
+                    }
+                  });
+                  _loadData();
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  width: 75,
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.8),
+                          border: Border.all(
+                            color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.5),
+                            width: 2.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isSelected 
+                                  ? const Color(0xFFFF8C00).withOpacity(0.3)
+                                  : Colors.black.withOpacity(0.04),
+                              blurRadius: isSelected ? 12 : 6,
+                              spreadRadius: isSelected ? 2 : 0,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: isGeneral
+                              ? Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Color(0xFFFF8C00), Color(0xFFFFB300)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.business,
+                                    color: Colors.white,
+                                    size: 26,
+                                  ),
+                                )
+                              : company['logo'] != null && company['logo'].toString().isNotEmpty
+                                  ? Image.network(
+                                      company['logo'],
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          color: fallbackColor,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            name.isNotEmpty ? name[0].toUpperCase() : '',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Container(
+                                      color: fallbackColor,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        name.isNotEmpty ? name[0].toUpperCase() : '',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          color: isSelected ? const Color(0xFFFF8C00) : Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

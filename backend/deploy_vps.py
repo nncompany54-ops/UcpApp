@@ -1,7 +1,18 @@
 import os
 import sys
 import paramiko
+import zipfile
 from stat import S_ISDIR
+
+def zip_dir(dir_path, zip_path):
+    print(f"Creating zip archive of {dir_path} at {zip_path}...")
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(dir_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, dir_path)
+                zipf.write(file_path, arcname)
+    print("Zip archive created successfully.")
 
 # VPS Connection configuration
 VPS_IP = '72.62.244.69'
@@ -132,14 +143,28 @@ def main():
         run_ssh_command(ssh, "systemctl enable gunicorn")
         run_ssh_command(ssh, "systemctl restart gunicorn")
         
-        # Step 7: Upload locally built Flutter Web app to VPS
-        print("\n--- Step 7: Uploading locally built Flutter Web application ---")
+        # Step 7: Compress and upload locally built Flutter Web app to VPS
+        print("\n--- Step 7: Uploading locally built Flutter Web application (zipped) ---")
+        local_zip_path = os.path.join(LOCAL_PROJECT_ROOT, "web_build.zip")
+        zip_dir(LOCAL_WEB_BUILD_DIR, local_zip_path)
+        
+        # Install unzip on the remote server if not present
+        run_ssh_command(ssh, "apt-get install -y unzip")
+        
+        remote_zip_path = "/tmp/web_build.zip"
+        print(f"[SFTP] Uploading {local_zip_path} -> {remote_zip_path}...")
+        sftp.put(local_zip_path, remote_zip_path)
+        
         remote_web_dir = f"{repo_dir}/frontend/build/web"
-        # Clear existing build files on remote to make space
-        run_ssh_command(ssh, f"rm -rf {remote_web_dir}")
-        print("Uploading build/web recursively...")
-        upload_dir_recursive(sftp, LOCAL_WEB_BUILD_DIR, remote_web_dir)
-        print("Flutter Web application uploaded successfully!")
+        run_ssh_command(ssh, f"rm -rf {remote_web_dir} && mkdir -p {remote_web_dir}")
+        print("Extracting zip archive on the remote server...")
+        run_ssh_command(ssh, f"unzip -o {remote_zip_path} -d {remote_web_dir}")
+        
+        # Clean up local and remote zip files
+        if os.path.exists(local_zip_path):
+            os.remove(local_zip_path)
+        run_ssh_command(ssh, f"rm -f {remote_zip_path}")
+        print("Flutter Web application uploaded and extracted successfully!")
         
         # Step 8: Configure Nginx site server block
         print("\n--- Step 8: Configuring Nginx server block ---")
@@ -190,7 +215,7 @@ def main():
         run_ssh_command(ssh, "systemctl restart nginx")
         
         print("\n=======================================================")
-        print("🎉 SUCCESS! Deployment to Hostinger VPS is fully complete!")
+        print("[SUCCESS] Deployment to Hostinger VPS is fully complete!")
         print("Your application is now globally live at: https://ucp.moha85awad.site")
         print("Django Admin panel is live at: https://ucp.moha85awad.site/admin")
         print("=======================================================")

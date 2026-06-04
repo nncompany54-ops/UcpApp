@@ -8,12 +8,18 @@ class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CompanySerializer
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['products__company']
 
     def get_queryset(self):
-        return Category.objects.all().distinct()
+        company_id = self.request.query_params.get('company', None)
+        if company_id is not None:
+            # أقسام مرتبطة بهذه الشركة + الأقسام العامة (غير مرتبطة بأي شركة)
+            from django.db.models import Q
+            return Category.objects.filter(
+                Q(companies__id=company_id) | Q(companies__isnull=True)
+            ).distinct()
+        return Category.objects.all()
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()

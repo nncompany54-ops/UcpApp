@@ -41,7 +41,7 @@ class ApiService {
     try {
       String url = '$baseUrl/categories/';
       if (companyId != null) {
-        url += '?products__company=$companyId';
+        url += '?company=$companyId';
       }
       final response = await http.get(Uri.parse(url));
       

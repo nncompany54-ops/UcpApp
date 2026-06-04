@@ -9,6 +9,12 @@ class Company(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
+    companies = models.ManyToManyField(
+        'Company',
+        related_name='categories',
+        blank=True,
+        verbose_name='الشركات المرتبطة'
+    )
 
     def __str__(self):
         return self.name

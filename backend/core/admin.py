@@ -19,8 +19,13 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id')
+    list_display = ('name', 'get_companies', 'id')
     search_fields = ('name',)
+    filter_horizontal = ('companies',)
+
+    def get_companies(self, obj):
+        return ', '.join([c.name for c in obj.companies.all()]) or 'عام (كل الشركات)'
+    get_companies.short_description = 'الشركات المرتبطة'
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

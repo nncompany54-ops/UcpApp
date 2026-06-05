@@ -290,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildSectionHeader('الشركات'),
         const SizedBox(height: 12),
         SizedBox(
-          height: 110,
+          height: 120,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -330,7 +330,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.8),
+                          color: isGeneral
+                              ? (isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.8))
+                              : Colors.white,
                           border: Border.all(
                             color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.5),
                             width: 2.5,
@@ -364,23 +366,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 )
                               : company['logo'] != null && company['logo'].toString().isNotEmpty
-                                  ? Image.network(
-                                      company['logo'],
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
-                                          color: fallbackColor,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            name.isNotEmpty ? name[0].toUpperCase() : '',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                              color: Colors.white,
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Image.network(
+                                        company['logo'],
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: fallbackColor,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              name.isNotEmpty ? name[0].toUpperCase() : '',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
+                                      ),
                                     )
                                   : Container(
                                       color: fallbackColor,

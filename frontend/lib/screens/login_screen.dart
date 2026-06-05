@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white.withOpacity(0.5),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.lock_person_outlined, size: 80, color: Color(0xFFFF8C00)),
+                  child: const Icon(Icons.lock_person_outlined, size: 80, color: Color(0xFF0B3C87)),
                 ),
                 const SizedBox(height: 30),
                 const Text(
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {},
-                    child: const Text('نسيت كلمة السر؟', style: TextStyle(color: Color(0xFFFF8C00))),
+                    child: const Text('نسيت كلمة السر؟', style: TextStyle(color: Color(0xFF0B3C87))),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -101,11 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF8C00),
+                      backgroundColor: const Color(0xFF0B3C87),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       elevation: 5,
-                      shadowColor: const Color(0xFFFF8C00).withOpacity(0.4),
+                      shadowColor: const Color(0xFF0B3C87).withOpacity(0.4),
                     ),
                     child: const Text('دخول', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text('ليس لديك حساب؟', style: TextStyle(color: Colors.black54)),
                     TextButton(
                       onPressed: () {},
-                      child: const Text('إنشاء حساب جديد', style: TextStyle(color: Color(0xFFFF8C00), fontWeight: FontWeight.bold)),
+                      child: const Text('إنشاء حساب جديد', style: TextStyle(color: Color(0xFF0B3C87), fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: onTogglePassword,
                 )
               : null,
-          suffixIcon: Icon(icon, color: const Color(0xFFFF8C00), size: 22),
+          suffixIcon: Icon(icon, color: const Color(0xFF0B3C87), size: 22),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),

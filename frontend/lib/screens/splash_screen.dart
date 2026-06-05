@@ -33,32 +33,54 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF0B3C87).withOpacity(0.15),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.business, size: 100, color: Color(0xFFFF8C00)),
+                child: Image.asset(
+                  'assets/images/ucp_logo.png',
+                  width: 120,
+                  height: 120,
+                ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 30),
               const Text(
                 'المؤسسة المتحدة',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Color(0xFF0B3C87),
                 ),
               ),
+              const SizedBox(height: 6),
               const Text(
-                'United Company Platform',
+                'للأدوية والمستلزمات الطبية',
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                  letterSpacing: 1.2,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1E6DDF),
                 ),
               ),
-              const SizedBox(height: 60),
-              const CircularProgressIndicator(color: Color(0xFFFF8C00)),
+              const SizedBox(height: 8),
+              const Text(
+                'اليمن - صنعاء',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 50),
+              const CircularProgressIndicator(color: Color(0xFF0B3C87)),
             ],
           ),
         ),

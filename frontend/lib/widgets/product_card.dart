@@ -75,10 +75,10 @@ class ProductCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFF8C00).withOpacity(0.1),
+                          color: const Color(0xFF0B3C87).withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.add_shopping_cart, color: Color(0xFFFF8C00), size: 18),
+                        child: const Icon(Icons.add_shopping_cart, color: Color(0xFF0B3C87), size: 18),
                       ),
                     ],
                   ),

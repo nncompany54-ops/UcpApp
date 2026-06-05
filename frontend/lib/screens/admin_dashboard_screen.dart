@@ -79,7 +79,7 @@ class AdminDashboardScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: const Color(0xFFFF8C00)),
+            Icon(icon, size: 40, color: const Color(0xFF0B3C87)),
             const SizedBox(height: 10),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 5),

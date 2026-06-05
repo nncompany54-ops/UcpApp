@@ -12,7 +12,7 @@ class PremiumBackground extends StatelessWidget {
       children: [
         // Base Background Color
         Container(
-          color: const Color(0xFFFFFBF5),
+          color: const Color(0xFFF6F9FE),
         ),
         
         // Background Blobs
@@ -22,7 +22,7 @@ class PremiumBackground extends StatelessWidget {
           child: _buildBlob(
             width: 300,
             height: 300,
-            color: const Color(0xFFFFE0C2).withOpacity(0.5),
+            color: const Color(0xFFD2E3FC).withOpacity(0.6),
           ),
         ),
         Positioned(
@@ -31,7 +31,7 @@ class PremiumBackground extends StatelessWidget {
           child: _buildBlob(
             width: 400,
             height: 400,
-            color: const Color(0xFFFFD1A9).withOpacity(0.3),
+            color: const Color(0xFFE8F0FE).withOpacity(0.5),
           ),
         ),
         Positioned(
@@ -40,7 +40,7 @@ class PremiumBackground extends StatelessWidget {
           child: _buildBlob(
             width: 350,
             height: 350,
-            color: const Color(0xFFFFEBD2).withOpacity(0.4),
+            color: const Color(0xFFE1F5FE).withOpacity(0.5),
           ),
         ),
 

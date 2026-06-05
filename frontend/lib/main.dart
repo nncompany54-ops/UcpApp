@@ -16,8 +16,8 @@ class UCPApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF8C00),
-          background: const Color(0xFFFFFBF5),
+          seedColor: const Color(0xFF0B3C87),
+          background: const Color(0xFFF6F9FE),
         ),
         fontFamily: 'Inter',
       ),

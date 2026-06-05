@@ -233,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: InputDecoration(
             hintText: 'ابحث عن منتج، شركة، أو قسم...',
             hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-            prefixIcon: const Icon(Icons.search, color: Color(0xFFFF8C00)),
+            prefixIcon: const Icon(Icons.search, color: Color(0xFF0B3C87)),
             suffixIcon: IconButton(
-              icon: Icon(Icons.filter_list, color: _activeFilters.isNotEmpty ? const Color(0xFFFF8C00) : Colors.grey),
+              icon: Icon(Icons.filter_list, color: _activeFilters.isNotEmpty ? const Color(0xFF0B3C87) : Colors.grey),
               onPressed: _showFilterSheet,
             ),
             border: InputBorder.none,
@@ -290,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildSectionHeader('الشركات'),
         const SizedBox(height: 12),
         SizedBox(
-          height: 100,
+          height: 110,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -321,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  width: 75,
+                  width: 100,
                   child: Column(
                     children: [
                       AnimatedContainer(
@@ -330,15 +330,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.8),
+                          color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.8),
                           border: Border.all(
-                            color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.5),
+                            color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.5),
                             width: 2.5,
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: isSelected 
-                                  ? const Color(0xFFFF8C00).withOpacity(0.3)
+                                  ? const Color(0xFF0B3C87).withOpacity(0.3)
                                   : Colors.black.withOpacity(0.04),
                               blurRadius: isSelected ? 12 : 6,
                               spreadRadius: isSelected ? 2 : 0,
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? Container(
                                   decoration: const BoxDecoration(
                                     gradient: LinearGradient(
-                                      colors: [Color(0xFFFF8C00), Color(0xFFFFB300)],
+                                      colors: [Color(0xFF0B3C87), Color(0xFF1E6DDF)],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
@@ -400,12 +400,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         name,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                          color: isSelected ? const Color(0xFFFF8C00) : Colors.black87,
+                          color: isSelected ? const Color(0xFF0B3C87) : Colors.black87,
                         ),
                         textAlign: TextAlign.center,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -458,15 +458,15 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 6.0),
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.5),
+                color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
-                  color: isSelected ? const Color(0xFFFF8C00) : Colors.white.withOpacity(0.5),
+                  color: isSelected ? const Color(0xFF0B3C87) : Colors.white.withOpacity(0.5),
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: const Color(0xFFFF8C00).withOpacity(0.3),
+                          color: const Color(0xFF0B3C87).withOpacity(0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         )

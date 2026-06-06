@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide CarouselController;
+import 'package:flutter/services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:async';
 import '../models/product.dart';
@@ -148,7 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return PremiumBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(context),
+        drawer: _buildDrawer(context),
         body: RefreshIndicator(
           onRefresh: () => _loadData(),
           child: SingleChildScrollView(
@@ -186,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -195,7 +197,14 @@ class _HomeScreenState extends State<HomeScreen> {
         'المؤسسة المتحدة',
         style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 22),
       ),
-      leading: IconButton(icon: const Icon(Icons.menu, color: Colors.black87), onPressed: () {}),
+      leading: Builder(
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.menu, color: Colors.black87),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.admin_panel_settings_outlined, color: Colors.black87),
@@ -508,6 +517,247 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: products.length,
         itemBuilder: (context, index) => ProductCard(product: products[index]),
       ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Column(
+          children: [
+            // Drawer Header
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF0B3C87), Color(0xFF1E6DDF)],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
+              ),
+              currentAccountPicture: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Image.asset(
+                  'assets/images/ucp_logo.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+              accountName: const Text(
+                'المؤسسة المتحدة للأدوية',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+              accountEmail: const Text(
+                'والمستلزمات الطبية - اليمن',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white70,
+                ),
+              ),
+            ),
+            
+            // Drawer Items
+            ListTile(
+              leading: const Icon(Icons.info_outline, color: Color(0xFF0B3C87)),
+              title: const Text(
+                'تعليمات الاستخدام',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context); // Close drawer
+                _showInstructionsDialog(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.redAccent),
+              title: const Text(
+                'خروج من التطبيق',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.redAccent,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context); // Close drawer
+                _showExitConfirmation(context);
+              },
+            ),
+            
+            const Spacer(),
+            // Drawer Footer
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    'النسخة 1.0.0',
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '© 2026 جميع الحقوق محفوظة',
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showInstructionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: const [
+                Icon(Icons.info_outline, color: Color(0xFF0B3C87), size: 28),
+                SizedBox(width: 10),
+                Text(
+                  'تعليمات المنصة',
+                  style: TextStyle(
+                    color: Color(0xFF0B3C87),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'نبذة عن التطبيق:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'تطبيق المؤسسة المتحدة هو منصة إلكترونية متكاملة لعرض وتصفح الأدوية والمستلزمات الطبية من مختلف الشركات والوكالات، مع تصفح تفاصيل كل منتج.',
+                    style: TextStyle(fontSize: 14, color: Colors.black54, height: 1.4),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'طريقة الاستخدام:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    '• تصفح المنتجات عبر قائمة المنتجات في الصفحة الرئيسية.\n'
+                    '• ابحث عن المنتجات باستخدام حقل البحث العلوي.\n'
+                    '• اختر شركة معينة لتصفية المنتجات الخاصة بها.\n'
+                    '• اضغط على أي منتج للاطلاع على تفاصيله الكاملة.',
+                    style: TextStyle(fontSize: 14, color: Colors.black54, height: 1.5),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'تصميم وتطوير:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'محمد عوض خميس بايعشوت',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Color(0xFF0B3C87),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: const [
+                      Icon(Icons.email_outlined, size: 18, color: Colors.black54),
+                      SizedBox(width: 6),
+                      SelectableText(
+                        'moha85awad@gmail.com',
+                        style: TextStyle(fontSize: 14, color: Colors.blue),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  'إغلاق',
+                  style: TextStyle(
+                    color: Color(0xFF0B3C87),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Text('خروج', style: TextStyle(fontWeight: FontWeight.bold)),
+            content: const Text('هل أنت متأكد من رغبتك في الخروج من التطبيق؟'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+              ),
+              TextButton(
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+                child: const Text('خروج', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

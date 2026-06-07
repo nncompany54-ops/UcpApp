@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide CarouselController;
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:js' as js;
@@ -872,7 +873,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _subscribeToNotifications();
                     },
                     icon: const Icon(Icons.notifications_active, size: 18),
-                    label: const Text('تفعيل جرس الإشعارات الفورية (مثل اليوتيوب)', style: TextStyle(fontSize: 12)),
+                    label: const Text('تفعيل جرس الإشعارات الفورية', style: TextStyle(fontSize: 12)),
                   ),
                   const SizedBox(height: 15),
                   const Divider(),
@@ -958,6 +959,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _subscribeToNotifications() async {
     try {
+      // Check if Firebase is initialized and not using placeholder credentials
+      bool isInitialized = false;
+      try {
+        final app = Firebase.app();
+        if (app.options.apiKey != "YOUR_API_KEY" && app.options.apiKey.isNotEmpty) {
+          isInitialized = true;
+        }
+      } catch (_) {}
+
+      if (!isInitialized) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('الرجاء تهيئة إعدادات Firebase الخاصة بك في الكود أولاً لتفعيل الإشعارات الفورية.', textDirection: TextDirection.rtl),
+              backgroundColor: Colors.orangeAccent,
+            ),
+          );
+        }
+        return;
+      }
+
       FirebaseMessaging messaging = FirebaseMessaging.instance;
       NotificationSettings settings = await messaging.requestPermission(
         alert: true,

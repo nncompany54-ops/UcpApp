@@ -78,3 +78,16 @@ class BannerAdmin(admin.ModelAdmin):
             return mark_safe('<span style="color: green; font-weight: bold;">نشط (مفتوح أو لم ينتهِ بعد)</span>')
         return mark_safe('<span style="color: red; font-weight: bold;">منتهي الصلاحية</span>')
     is_active_status.short_description = 'الحالة'
+
+from .models import FCMDevice
+
+@admin.register(FCMDevice)
+class FCMDeviceAdmin(admin.ModelAdmin):
+    list_display = ('token_preview', 'created_at', 'id')
+    search_fields = ('token',)
+    ordering = ('-created_at',)
+
+    def token_preview(self, obj):
+        return obj.token[:60] + '...' if len(obj.token) > 60 else obj.token
+    token_preview.short_description = 'رمز الجهاز'
+

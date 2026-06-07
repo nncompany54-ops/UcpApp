@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company, Category, Product, Banner
+from .models import Company, Category, Product, Banner, FCMDevice
 
 class CompanySerializer(serializers.ModelSerializer):
     logo = serializers.SerializerMethodField()
@@ -66,3 +66,9 @@ class BannerSerializer(serializers.ModelSerializer):
         elif not url.startswith('http'):
             return f"https://ucp.moha85awad.site/{url}"
         return url
+
+class FCMDeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FCMDevice
+        fields = ['id', 'token', 'created_at']
+

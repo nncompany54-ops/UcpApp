@@ -58,3 +58,36 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new:
+            try:
+                from .notifications import send_push_notification
+                image_url = None
+                if self.image:
+                    image_url = self.image.url
+                    if image_url.startswith('/'):
+                        image_url = "https://ucp.moha85awad.site" + image_url
+                
+                send_push_notification(
+                    title="عروض ترويجية جديدة متوفرة 🔔",
+                    body=f"تم إضافة عرض جديد في التطبيق: {self.title}",
+                    image_url=image_url
+                )
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Failed to trigger push notification for banner: {e}")
+
+class FCMDevice(models.Model):
+    token = models.CharField(max_length=500, unique=True, verbose_name="رمز الجهاز")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ التسجيل")
+
+    class Meta:
+        verbose_name = "جهاز إشعارات"
+        verbose_name_plural = "أجهزة الإشعارات"
+
+    def __str__(self):
+        return self.token[:30] + "..."

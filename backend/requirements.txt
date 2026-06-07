@@ -10,3 +10,5 @@ Pillow
 gunicorn
 whitenoise
 dj-database-url
+firebase-admin
+

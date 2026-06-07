@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide CarouselController;
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:js' as js;
 import 'package:carousel_slider/carousel_slider.dart';
@@ -859,6 +860,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0B3C87),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 40),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _subscribeToNotifications();
+                    },
+                    icon: const Icon(Icons.notifications_active, size: 18),
+                    label: const Text('تفعيل جرس الإشعارات الفورية (مثل اليوتيوب)', style: TextStyle(fontSize: 12)),
+                  ),
+                  const SizedBox(height: 15),
+                  const Divider(),
+                  const SizedBox(height: 10),
                   if (_banners.isEmpty)
                     const Text('لا توجد إشعارات أو عروض جديدة حالياً.')
                   else ...[
@@ -935,6 +953,66 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint('Error launching WhatsApp: $e');
+    }
+  }
+
+  Future<void> _subscribeToNotifications() async {
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        String? token;
+        if (kIsWeb) {
+          // You must replace YOUR_VAPID_KEY_HERE with your Web Push Certificate key from Firebase Console.
+          token = await messaging.getToken(
+            vapidKey: "YOUR_VAPID_KEY_HERE"
+          );
+        } else {
+          token = await messaging.getToken();
+        }
+
+        if (token != null) {
+          debugPrint("FCM Token: $token");
+          await _apiService.registerFCMToken(token);
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('تم تفعيل الجرس والاشتراك في الإشعارات بنجاح!', textDirection: TextDirection.rtl),
+                backgroundColor: Color(0xFF0B3C87),
+              ),
+            );
+          }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم رفض إذن الإشعارات من المتصفح.', textDirection: TextDirection.rtl),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint("Error subscribing to notifications: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('حدث خطأ أثناء تفعيل الجرس: $e', textDirection: TextDirection.rtl),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 }

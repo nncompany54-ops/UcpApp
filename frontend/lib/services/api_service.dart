@@ -85,4 +85,19 @@ class ApiService {
       throw Exception('خطأ في الاتصال: $e');
     }
   }
+
+  Future<void> registerFCMToken(String token) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/fcm-devices/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'token': token}),
+      );
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception('فشل تسجيل رمز الجهاز على الخادم: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('خطأ في تسجيل الرمز: $e');
+    }
+  }
 }

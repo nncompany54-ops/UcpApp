@@ -1,7 +1,8 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Company, Category, Product, Banner
-from .serializers import CompanySerializer, CategorySerializer, ProductSerializer, BannerSerializer
+from .models import Company, Category, Product, Banner, FCMDevice
+from .serializers import CompanySerializer, CategorySerializer, ProductSerializer, BannerSerializer, FCMDeviceSerializer
+
 
 class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Company.objects.all()
@@ -41,3 +42,21 @@ class BannerViewSet(viewsets.ReadOnlyModelViewSet):
         return Banner.objects.filter(
             Q(expires_at__isnull=True) | Q(expires_at__gt=now)
         ).order_by('-created_at')
+
+from rest_framework import status
+from rest_framework.response import Response
+
+class FCMDeviceViewSet(viewsets.ModelViewSet):
+    queryset = FCMDevice.objects.all()
+    serializer_class = FCMDeviceSerializer
+
+    def create(self, request, *args, **kwargs):
+        token = request.data.get('token')
+        if not token:
+            return Response({'error': 'رمز الجهاز (token) مطلوب'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        device, created = FCMDevice.objects.get_or_create(token=token)
+        serializer = self.get_serializer(device)
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(serializer.data, status=status_code)
+

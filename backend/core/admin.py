@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from .models import Company, Category, Product, ProductImage
 
 class ProductImageInline(admin.TabularInline):
@@ -74,6 +75,6 @@ class BannerAdmin(admin.ModelAdmin):
     def is_active_status(self, obj):
         from django.utils import timezone
         if obj.expires_at is None or obj.expires_at > timezone.now():
-            return format_html('<span style="color: green; font-weight: bold;">نشط (مفتوح أو لم ينتهِ بعد)</span>')
-        return format_html('<span style="color: red; font-weight: bold;">منتهي الصلاحية</span>')
+            return mark_safe('<span style="color: green; font-weight: bold;">نشط (مفتوح أو لم ينتهِ بعد)</span>')
+        return mark_safe('<span style="color: red; font-weight: bold;">منتهي الصلاحية</span>')
     is_active_status.short_description = 'الحالة'

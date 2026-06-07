@@ -44,3 +44,17 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"صورة لـ {self.product.name}"
+
+class Banner(models.Model):
+    title = models.CharField(max_length=255, verbose_name="العنوان")
+    image = models.ImageField(upload_to='banners/', verbose_name="الصورة")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاريخ الإنشاء")
+    expires_at = models.DateTimeField(blank=True, null=True, verbose_name="تاريخ الانتهاء", help_text="اتركه فارغاً ليكون العرض مفتوحاً/مستمراً")
+
+    class Meta:
+        verbose_name = "صورة سلايدر"
+        verbose_name_plural = "صور السلايدر"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title

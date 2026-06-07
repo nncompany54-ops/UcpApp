@@ -1,7 +1,7 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Company, Category, Product
-from .serializers import CompanySerializer, CategorySerializer, ProductSerializer
+from .models import Company, Category, Product, Banner
+from .serializers import CompanySerializer, CategorySerializer, ProductSerializer, BannerSerializer
 
 class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Company.objects.all()
@@ -27,3 +27,17 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['company', 'category', 'skin_type', 'target_audience', 'is_featured', 'is_new_arrival']
     search_fields = ['name', 'description', 'company__name', 'category__name']
+
+from django.utils import timezone
+from django.db.models import Q
+
+class BannerViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        # Return only active (not expired) banners
+        return Banner.objects.filter(
+            Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+        ).order_by('-created_at')

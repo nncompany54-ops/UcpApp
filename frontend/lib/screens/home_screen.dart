@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart' hide CarouselController;
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:js' as js;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:async';
 import '../models/product.dart';
@@ -24,6 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = 0;
   int _selectedCompanyIndex = 0;
   
+  List<Map<String, dynamic>> _banners = [];
+  bool _hasNewNotification = false;
+  String? _lastSeenBannerId;
+  
   // فلاتر البحث
   Map<String, dynamic> _activeFilters = {};
 
@@ -33,11 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Product> products = [];
   bool _isLoading = true;
 
-  final List<String> bannerImages = [
-    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1612817288484-6f916006741a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-  ];
 
   @override
   void initState() {
@@ -55,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData({String? search}) async {
     setState(() => _isLoading = true);
     try {
+      final fetchedBanners = await _apiService.fetchBanners();
       final fetchedCategories = await _apiService.fetchCategories(
         companyId: _activeFilters['company'],
       );
@@ -63,7 +66,21 @@ class _HomeScreenState extends State<HomeScreen> {
         search: search ?? _searchController.text,
         filters: _activeFilters,
       );
+
+      await _loadLastSeenBannerId();
+      bool hasNew = false;
+      if (fetchedBanners.isNotEmpty) {
+        final latestId = fetchedBanners.first['id'].toString();
+        if (_lastSeenBannerId != latestId) {
+          if (_lastSeenBannerId != null) {
+            hasNew = true;
+          }
+        }
+      }
+
       setState(() {
+        _banners = fetchedBanners;
+        _hasNewNotification = hasNew;
         _rawCategories = fetchedCategories;
         categories = ['الكل', ...fetchedCategories.map((c) => c['name'] as String)];
         _companies = [
@@ -215,7 +232,30 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        IconButton(icon: const Icon(Icons.notifications_none, color: Colors.black87), onPressed: () {}),
+        Stack(
+          children: [
+            IconButton(
+              icon: Icon(
+                _hasNewNotification ? Icons.notifications_active : Icons.notifications_none,
+                color: _hasNewNotification ? const Color(0xFF0B3C87) : Colors.black87,
+              ),
+              onPressed: () => _showNotificationDialog(context),
+            ),
+            if (_hasNewNotification)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -255,6 +295,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget _buildCarouselSlider() {
+    if (_banners.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Column(
       children: [
         CarouselSlider(
@@ -264,27 +307,41 @@ class _HomeScreenState extends State<HomeScreen> {
             enlargeCenterPage: true,
             aspectRatio: 16 / 9,
             autoPlayCurve: Curves.fastOutSlowIn,
-            enableInfiniteScroll: true,
+            enableInfiniteScroll: _banners.length > 1,
             autoPlayAnimationDuration: const Duration(milliseconds: 800),
             viewportFraction: 0.9,
             onPageChanged: (index, reason) => setState(() => _currentBannerIndex = index),
           ),
-          items: bannerImages.map((imageUrl) => Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
-            ),
-          )).toList(),
+          items: _banners.map((banner) {
+            final imageUrl = banner['image'] ?? '';
+            return GestureDetector(
+              onTap: () => _launchWhatsAppForBooking(banner['title'] ?? ''),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  image: DecorationImage(
+                    image: imageUrl.isNotEmpty
+                        ? NetworkImage(imageUrl)
+                        : const AssetImage('assets/images/ucp_logo.png') as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: bannerImages.asMap().entries.map((entry) => Container(
+          children: _banners.asMap().entries.map((entry) => Container(
             width: _currentBannerIndex == entry.key ? 20.0 : 8.0,
             height: 8.0,
             margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: _currentBannerIndex == entry.key ? Colors.blue : Colors.grey.shade300),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: _currentBannerIndex == entry.key ? const Color(0xFF0B3C87) : Colors.grey.shade300,
+            ),
           )).toList(),
         ),
       ],
@@ -750,7 +807,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  SystemNavigator.pop();
+                  Navigator.pop(context); // close dialog
+                  if (kIsWeb) {
+                    try {
+                      js.context.callMethod('close');
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        js.context['location'].callMethod('replace', ['about:blank']);
+                      });
+                    } catch (e) {
+                      debugPrint('Error closing web window: $e');
+                    }
+                  } else {
+                    SystemNavigator.pop();
+                  }
                 },
                 child: const Text('خروج', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
               ),
@@ -759,5 +828,111 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  void _showNotificationDialog(BuildContext context) {
+    if (_banners.isNotEmpty) {
+      final latestBanner = _banners.first;
+      final latestId = latestBanner['id'].toString();
+      _saveLastSeenBannerId(latestId);
+      setState(() {
+        _hasNewNotification = false;
+      });
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: Row(
+              children: const [
+                Icon(Icons.notifications_active, color: Color(0xFF0B3C87)),
+                SizedBox(width: 8),
+                Text('الإشعارات والعروض الجديدة', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_banners.isEmpty)
+                    const Text('لا توجد إشعارات أو عروض جديدة حالياً.')
+                  else ...[
+                    const Text(
+                      'تم إضافة عروض ترويجية جديدة في المعرض! تفقدها الآن للحجز المباشر:',
+                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(height: 12),
+                    ..._banners.take(3).map((banner) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 18),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                banner['title'] ?? 'عرض جديد',
+                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('حسناً', style: TextStyle(color: Color(0xFF0B3C87), fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _loadLastSeenBannerId() async {
+    if (kIsWeb) {
+      try {
+        _lastSeenBannerId = js.context['localStorage'].callMethod('getItem', ['last_seen_banner_id']);
+      } catch (e) {
+        debugPrint('Error loading from localStorage: $e');
+      }
+    }
+  }
+
+  Future<void> _saveLastSeenBannerId(String id) async {
+    _lastSeenBannerId = id;
+    if (kIsWeb) {
+      try {
+        js.context['localStorage'].callMethod('setItem', ['last_seen_banner_id', id]);
+      } catch (e) {
+        debugPrint('Error saving to localStorage: $e');
+      }
+    }
+  }
+
+  Future<void> _launchWhatsAppForBooking(String bannerTitle) async {
+    final String message = Uri.encodeComponent(
+      'مرحباً، أود الاستفسار والحجز بخصوص العرض التالي من تطبيق المؤسسة المتحدة: ($bannerTitle)'
+    );
+    final Uri whatsappUrl = Uri.parse('https://wa.me/967783639836?text=$message');
+    
+    try {
+      if (!await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication)) {
+        debugPrint('Could not launch WhatsApp for $whatsappUrl');
+      }
+    } catch (e) {
+      debugPrint('Error launching WhatsApp: $e');
+    }
   }
 }

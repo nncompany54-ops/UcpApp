@@ -56,3 +56,24 @@ class ProductAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="width: 50px; height: 50px; border-radius: 5px; object-fit: cover;" />', first_image.image.url)
         return "لا توجد صورة"
     show_image.short_description = 'صورة المنتج'
+
+from .models import Banner
+
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ('show_image', 'title', 'created_at', 'expires_at', 'is_active_status')
+    list_filter = ('created_at', 'expires_at')
+    search_fields = ('title',)
+
+    def show_image(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="width: 100px; height: 50px; border-radius: 5px; object-fit: cover;" />', obj.image.url)
+        return "لا توجد صورة"
+    show_image.short_description = 'صورة السلايدر'
+
+    def is_active_status(self, obj):
+        from django.utils import timezone
+        if obj.expires_at is None or obj.expires_at > timezone.now():
+            return format_html('<span style="color: green; font-weight: bold;">نشط (مفتوح أو لم ينتهِ بعد)</span>')
+        return format_html('<span style="color: red; font-weight: bold;">منتهي الصلاحية</span>')
+    is_active_status.short_description = 'الحالة'

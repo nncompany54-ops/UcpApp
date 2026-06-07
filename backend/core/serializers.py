@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company, Category, Product
+from .models import Company, Category, Product, Banner
 
 class CompanySerializer(serializers.ModelSerializer):
     logo = serializers.SerializerMethodField()
@@ -49,3 +49,20 @@ class ProductSerializer(serializers.ModelSerializer):
                 url = f"https://ucp.moha85awad.site/{url}"
             urls.append(url)
         return urls
+
+class BannerSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Banner
+        fields = ['id', 'title', 'image', 'expires_at', 'created_at']
+
+    def get_image(self, obj):
+        if not obj.image:
+            return None
+        url = obj.image.url
+        if url.startswith('/'):
+            return f"https://ucp.moha85awad.site{url}"
+        elif not url.startswith('http'):
+            return f"https://ucp.moha85awad.site/{url}"
+        return url

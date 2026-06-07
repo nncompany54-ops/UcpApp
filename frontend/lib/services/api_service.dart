@@ -70,4 +70,19 @@ class ApiService {
       throw Exception('خطأ في الاتصال: $e');
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchBanners() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/banners/'));
+      
+      if (response.statusCode == 200) {
+        List<dynamic> body = jsonDecode(utf8.decode(response.bodyBytes));
+        return List<Map<String, dynamic>>.from(body);
+      } else {
+        throw Exception('فشل في تحميل السلايدر');
+      }
+    } catch (e) {
+      throw Exception('خطأ في الاتصال: $e');
+    }
+  }
 }

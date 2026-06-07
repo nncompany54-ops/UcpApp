@@ -315,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
           items: _banners.map((banner) {
             final imageUrl = banner['image'] ?? '';
             return GestureDetector(
-              onTap: () => _launchWhatsAppForBooking(banner['title'] ?? ''),
+              onTap: () => _launchWhatsAppForBooking(banner['title'] ?? '', imageUrl),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: BoxDecoration(
@@ -921,10 +921,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _launchWhatsAppForBooking(String bannerTitle) async {
-    final String message = Uri.encodeComponent(
-      'مرحباً، أود الاستفسار والحجز بخصوص العرض التالي من تطبيق المؤسسة المتحدة: ($bannerTitle)'
-    );
+  Future<void> _launchWhatsAppForBooking(String bannerTitle, String imageUrl) async {
+    String messageText = 'مرحباً، أود الاستفسار والحجز بخصوص العرض التالي من تطبيق المؤسسة المتحدة: ($bannerTitle)';
+    if (imageUrl.isNotEmpty) {
+      messageText += '\nرابط صورة العرض: $imageUrl';
+    }
+    final String message = Uri.encodeComponent(messageText);
     final Uri whatsappUrl = Uri.parse('https://wa.me/967783639836?text=$message');
     
     try {

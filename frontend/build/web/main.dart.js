@@ -27260,8 +27260,9 @@ aoS:function aoS(a){this.a=a},
 aoP:function aoP(a,b){this.a=a
 this.b=b},
 aoR:function aoR(a){this.a=a},
-aoQ:function aoQ(a,b){this.a=a
-this.b=b},
+aoQ:function aoQ(a,b,c){this.a=a
+this.b=b
+this.c=c},
 aoT:function aoT(a){this.a=a},
 ap_:function ap_(a){this.a=a},
 aoZ:function aoZ(a,b,c,d){var _=this
@@ -90143,20 +90144,21 @@ for(;;)switch(s){case 0:q.Q=a
 try{$.a0M().h(0,"localStorage").nF("setItem",A.b(["last_seen_banner_id",a],t.s))}catch(n){p=A.ap(n)
 A.mn().$1("Error saving to localStorage: "+A.l(p))}return A.O(null,r)}})
 return A.P($async$EC,r)},
-xf(a){return this.acr(a)},
-acr(a){var s=0,r=A.Q(t.H),q=1,p=[],o,n,m,l
-var $async$xf=A.R(function(b,c){if(b===1){p.push(c)
-s=q}for(;;)switch(s){case 0:m=A.eH("https://wa.me/967783639836?text="+A.Hv(2,"\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u0648\u062f \u0627\u0644\u0627\u0633\u062a\u0641\u0633\u0627\u0631 \u0648\u0627\u0644\u062d\u062c\u0632 \u0628\u062e\u0635\u0648\u0635 \u0627\u0644\u0639\u0631\u0636 \u0627\u0644\u062a\u0627\u0644\u064a \u0645\u0646 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u0645\u0624\u0633\u0633\u0629 \u0627\u0644\u0645\u062a\u062d\u062f\u0629: ("+a+")",B.a9,!1),0,null)
+xf(a,b){return this.acr(a,b)},
+acr(a,b){var s=0,r=A.Q(t.H),q=1,p=[],o,n,m,l,k
+var $async$xf=A.R(function(c,d){if(c===1){p.push(d)
+s=q}for(;;)switch(s){case 0:m="\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u0648\u062f \u0627\u0644\u0627\u0633\u062a\u0641\u0633\u0627\u0631 \u0648\u0627\u0644\u062d\u062c\u0632 \u0628\u062e\u0635\u0648\u0635 \u0627\u0644\u0639\u0631\u0636 \u0627\u0644\u062a\u0627\u0644\u064a \u0645\u0646 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u0645\u0624\u0633\u0633\u0629 \u0627\u0644\u0645\u062a\u062d\u062f\u0629: ("+a+")"
+l=A.eH("https://wa.me/967783639836?text="+A.Hv(2,b.length!==0?m+("\n\u0631\u0627\u0628\u0637 \u0635\u0648\u0631\u0629 \u0627\u0644\u0639\u0631\u0636: "+b):m,B.a9,!1),0,null)
 q=3
 s=6
-return A.T(A.aww(m,B.oA),$async$xf)
-case 6:if(!c)A.mn().$1("Could not launch WhatsApp for "+A.l(m))
+return A.T(A.aww(l,B.oA),$async$xf)
+case 6:if(!d)A.mn().$1("Could not launch WhatsApp for "+A.l(l))
 q=1
 s=5
 break
 case 3:q=2
-l=p.pop()
-o=A.ap(l)
+k=p.pop()
+o=A.ap(k)
 A.mn().$1("Error launching WhatsApp: "+A.l(o))
 s=5
 break
@@ -90255,12 +90257,12 @@ A.aoR.prototype={
 $1(a){var s,r=null,q=J.ba(a,"image")
 if(q==null)q=""
 s=A.db(15)
-return A.iT(r,A.c9(r,r,B.o,r,r,new A.bN(r,A.aBX(B.jb,J.ju(q)?new A.ni(q,1,r,B.m_):B.Be,r),r,s,r,r,B.a2),r,r,B.Im,r,r,r,r),B.a3,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,new A.aoQ(this.a,a),r,r,r)},
+return A.iT(r,A.c9(r,r,B.o,r,r,new A.bN(r,A.aBX(B.jb,J.ju(q)?new A.ni(q,1,r,B.m_):B.Be,r),r,s,r,r,B.a2),r,r,B.Im,r,r,r,r),B.a3,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,new A.aoQ(this.a,a,q),r,r,r)},
 $S:560}
 A.aoQ.prototype={
 $0(){var s=J.ba(this.b,"title")
 if(s==null)s=""
-return this.a.xf(s)},
+return this.a.xf(s,this.c)},
 $S:0}
 A.aoT.prototype={
 $1(a){var s=null,r=this.a.r===a.a,q=r?20:8,p=A.db(10)

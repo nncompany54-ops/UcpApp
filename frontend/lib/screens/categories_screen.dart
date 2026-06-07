@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'category_products_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -58,7 +59,21 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
               itemCount: _categories.length,
               itemBuilder: (context, index) {
-                return _buildCategoryCard(_categories[index]['name']);
+                final category = _categories[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryProductsScreen(
+                          categoryId: category['id'],
+                          categoryName: category['name'],
+                        ),
+                      ),
+                    );
+                  },
+                  child: _buildCategoryCard(category['name']),
+                );
               },
             ),
     );

@@ -996,7 +996,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (kIsWeb) {
           // You must replace YOUR_VAPID_KEY_HERE with your Web Push Certificate key from Firebase Console.
           token = await messaging.getToken(
-            vapidKey: "YOUR_VAPID_KEY_HERE"
+            vapidKey: "BNIM9qYgyKLHkfitoD26U61zJIPw6kN1H6voIvt5xz3-9OCt6mWXQ-WBJcz_WHrNRx_qh0lJNkoU2lI2V2IVnWg"
           );
         } else {
           token = await messaging.getToken();

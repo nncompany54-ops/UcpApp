@@ -135,6 +135,16 @@ def main():
             f.write(env_content)
         print(f"Created .env file at {env_path}")
         
+        # Step 4b: Upload firebase-service-account.json if it exists locally
+        local_service_account = os.path.join(LOCAL_PROJECT_ROOT, "backend", "firebase-service-account.json")
+        if os.path.exists(local_service_account):
+            remote_service_account = f"{repo_dir}/backend/firebase-service-account.json"
+            print(f"[SFTP] Uploading {local_service_account} -> {remote_service_account}...")
+            sftp.put(local_service_account, remote_service_account)
+        else:
+            print("firebase-service-account.json not found locally. Skipping upload.")
+        
+        
         # Step 5: Django database migrations and static collection
         print("\n--- Step 5: Running Django migrations and collectstatic ---")
         run_ssh_command(ssh, f"{repo_dir}/backend/venv/bin/python {repo_dir}/backend/manage.py collectstatic --noinput")

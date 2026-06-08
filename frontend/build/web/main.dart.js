@@ -92982,7 +92982,7 @@ s=j.c===B.jj?8:10
 break
 case 8:i=null
 s=11
-return A.R(k.gO6().rP(null,"YOUR_VAPID_KEY_HERE"),$async$q8)
+return A.R(k.gO6().rP(null,"BNIM9qYgyKLHkfitoD26U61zJIPw6kN1H6voIvt5xz3-9OCt6mWXQ-WBJcz_WHrNRx_qh0lJNkoU2lI2V2IVnWg"),$async$q8)
 case 11:i=b
 s=i!=null?12:13
 break
@@ -97699,7 +97699,7 @@ B.d0=new A.pH(0,"none")
 B.Jo=new A.pH(1,"low")
 B.bU=new A.pH(2,"medium")
 B.kC=new A.pH(3,"high")
-B.Jp=new A.A3("YOUR_API_KEY","YOUR_APP_ID","YOUR_MESSAGING_SENDER_ID","YOUR_PROJECT_ID","YOUR_AUTH_DOMAIN",null,"YOUR_STORAGE_BUCKET",null,null,null,null,null,null,null)
+B.Jp=new A.A3("AIzaSyB9uweZD8K7vXMKOtHVLVwjImKINlRR4ZE","1:757541342147:web:f9d438d1c86c7c58eb4b76","757541342147","ucp-platform","ucp-platform.firebaseapp.com",null,"ucp-platform.firebasestorage.app","G-MTX2TPJYN9",null,null,null,null,null,null)
 B.E=new A.y(0,0)
 B.Jq=new A.Mr(B.E,B.E)
 B.ot=new A.Mv(0,"tight")

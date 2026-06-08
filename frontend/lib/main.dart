@@ -7,12 +7,13 @@ void main() async {
   try {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID",
+        apiKey: "AIzaSyB9uweZD8K7vXMKOtHVLVwjImKINlRR4ZE",
+        authDomain: "ucp-platform.firebaseapp.com",
+        projectId: "ucp-platform",
+        storageBucket: "ucp-platform.firebasestorage.app",
+        messagingSenderId: "757541342147",
+        appId: "1:757541342147:web:f9d438d1c86c7c58eb4b76",
+        measurementId: "G-MTX2TPJYN9",
       ),
     );
   } catch (e) {

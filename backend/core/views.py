@@ -45,10 +45,11 @@ class BannerViewSet(viewsets.ReadOnlyModelViewSet):
 
 from rest_framework import status
 from rest_framework.response import Response
-
+from rest_framework import permissions
 class FCMDeviceViewSet(viewsets.ModelViewSet):
     queryset = FCMDevice.objects.all()
     serializer_class = FCMDeviceSerializer
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         token = request.data.get('token')

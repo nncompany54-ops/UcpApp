@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "AIzaSyB9uweZD8K7vXMKOtHVLVwjImKINlRR4ZE",
-        authDomain: "ucp-platform.firebaseapp.com",
-        projectId: "ucp-platform",
-        storageBucket: "ucp-platform.firebasestorage.app",
-        messagingSenderId: "757541342147",
-        appId: "1:757541342147:web:f9d438d1c86c7c58eb4b76",
-        measurementId: "G-MTX2TPJYN9",
-      ),
+      options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {
     debugPrint("فشل تهيئة Firebase (يرجى التحقق من المفاتيح): $e");

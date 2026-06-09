@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import '../firebase_options.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:js' as js;
 import 'package:carousel_slider/carousel_slider.dart';
@@ -964,15 +965,7 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         if (Firebase.apps.isEmpty) {
           await Firebase.initializeApp(
-            options: const FirebaseOptions(
-              apiKey: "AIzaSyB9uweZD8K7vXMKOtHVLVwjImKINlRR4ZE",
-              authDomain: "ucp-platform.firebaseapp.com",
-              projectId: "ucp-platform",
-              storageBucket: "ucp-platform.firebasestorage.app",
-              messagingSenderId: "757541342147",
-              appId: "1:757541342147:web:f9d438d1c86c7c58eb4b76",
-              measurementId: "G-MTX2TPJYN9",
-            ),
+            options: DefaultFirebaseOptions.currentPlatform,
           );
         }
         isInitialized = true;

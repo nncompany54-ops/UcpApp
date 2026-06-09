@@ -959,21 +959,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _subscribeToNotifications() async {
     try {
-      // Check if Firebase is initialized and not using placeholder credentials
       bool isInitialized = false;
+      String errorDetails = '';
       try {
-        final app = Firebase.app();
-        if (app.options.apiKey != "YOUR_API_KEY" && app.options.apiKey.isNotEmpty) {
-          isInitialized = true;
+        if (Firebase.apps.isEmpty) {
+          await Firebase.initializeApp(
+            options: const FirebaseOptions(
+              apiKey: "AIzaSyB9uweZD8K7vXMKOtHVLVwjImKINlRR4ZE",
+              authDomain: "ucp-platform.firebaseapp.com",
+              projectId: "ucp-platform",
+              storageBucket: "ucp-platform.firebasestorage.app",
+              messagingSenderId: "757541342147",
+              appId: "1:757541342147:web:f9d438d1c86c7c58eb4b76",
+              measurementId: "G-MTX2TPJYN9",
+            ),
+          );
         }
-      } catch (_) {}
+        isInitialized = true;
+      } catch (e) {
+        errorDetails = e.toString();
+      }
 
       if (!isInitialized) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('الرجاء تهيئة إعدادات Firebase الخاصة بك في الكود أولاً لتفعيل الإشعارات الفورية.', textDirection: TextDirection.rtl),
-              backgroundColor: Colors.orangeAccent,
+            SnackBar(
+              content: Text('خطأ في تهيئة Firebase: $errorDetails', textDirection: TextDirection.rtl),
+              backgroundColor: Colors.redAccent,
+              duration: const Duration(seconds: 10),
             ),
           );
         }
